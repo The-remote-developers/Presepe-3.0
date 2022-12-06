@@ -9,7 +9,6 @@ let inputDone;
 let outputDone;
 let inputStream;
 let outputStream;
-let showCalibration = false;
 
 const maxLogLength = 100;
 const baudRates = [300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 74880, 115200, 230400, 250000, 500000, 1000000, 2000000];
@@ -59,6 +58,37 @@ async function connect() {
   });
 }
 
+async function readLoop() {
+  while (true) {
+    const {value, done} = await reader.read();
+    if (value) {
+      switch(value) {
+        case '1':
+          changeZone(1);
+          break;
+        case '2':
+          changeZone(2);
+          break;
+        case '3':
+          changeZone(3);
+          break;
+        case '4':
+          changeZone(4);
+          break;
+      }
+    }
+    if (done) {
+      console.log('[readLoop] DONE', done);
+      reader.releaseLock();
+      break;
+    }
+  }
+}
+
+function changeZone(zone) {
+  console.log("test");
+}
+
 /**
  * @name disconnect
  * Closes the Web Serial connection.
@@ -80,7 +110,6 @@ async function disconnect() {
 
   await port.close();
   port = null;
-  showCalibration = false;
 }
 
 function logData(line) {
