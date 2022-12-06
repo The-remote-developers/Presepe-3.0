@@ -1,8 +1,5 @@
 'use strict';
 
-import * as THREE from 'three';
-import {OBJLoader} from 'objloader';
-
 let port;
 let reader;
 let inputDone;
@@ -14,30 +11,21 @@ const maxLogLength = 100;
 const baudRates = [300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 74880, 115200, 230400, 250000, 500000, 1000000, 2000000];
 const log = document.getElementById('log');
 const butConnect = document.getElementById('butConnect');
-const butClear = document.getElementById('butClear');
 const baudRate = document.getElementById('baudRate');
-const autoscroll = document.getElementById('autoscroll');
-const showTimestamp = document.getElementById('showTimestamp');
 
 document.addEventListener('DOMContentLoaded', async () => {
   butConnect.addEventListener('click', clickConnect);
-  butClear.addEventListener('click', clickClear);
-  autoscroll.addEventListener('click', clickAutoscroll);
-  showTimestamp.addEventListener('click', clickTimestamp);
   baudRate.addEventListener('change', changeBaudRate);
 
-  if ('serial' in navigator) {
+  if (!'serial' in navigator) {
     const notSupported = document.getElementById('notSupported');
-    notSupported.classList.add('hidden');
-  }
-
-  if (isWebGLAvailable()) {
-    const webGLnotSupported = document.getElementById('webGLnotSupported');
-    webGLnotSupported.classList.add('hidden');
+    notSupported.classList.remove('hidden');
   }
 
   initBaudRate();
   loadAllSettings();
+  logData("Waiting for serial connection...");
+
 });
 
 async function connect() {
@@ -61,21 +49,9 @@ async function connect() {
 async function readLoop() {
   while (true) {
     const {value, done} = await reader.read();
-    if (value) {
-      switch(value) {
-        case '1':
-          changeZone(1);
-          break;
-        case '2':
-          changeZone(2);
-          break;
-        case '3':
-          changeZone(3);
-          break;
-        case '4':
-          changeZone(4);
-          break;
-      }
+    // Check if the value is a number
+    if (value != null && !isNaN(value)) {
+      changeZone(value);
     }
     if (done) {
       console.log('[readLoop] DONE', done);
@@ -85,8 +61,17 @@ async function readLoop() {
   }
 }
 
-function changeZone(zone) {
-  console.log("test");
+async function changeZone(zone) {
+  console.log("Changing zone to " + zone);
+  // Open a video in fullscreen
+  var video = window.open("videos/it/" + zone + ".mp4", "Video", "scrollbars=no,status=yes,titlebar=no,toolbar=no,menubar=no");
+  console.log(video);
+  // Emulate a f11 keypress in the document 
+  video.document.dispatchEvent(new KeyboardEvent('keydown', {key: 'F11'}));
+  
+
+ 
+  
 }
 
 /**
@@ -114,13 +99,12 @@ async function disconnect() {
 
 function logData(line) {
   // Update the Log
-  if (showTimestamp.checked) {
-    let d = new Date();
-    let timestamp = d.getHours() + ":" + `${d.getMinutes()}`.padStart(2, 0) + ":" +
-        `${d.getSeconds()}`.padStart(2, 0) + "." + `${d.getMilliseconds()}`.padStart(3, 0);
-    log.innerHTML += '<span class="timestamp">' + timestamp + ' -> </span>';
-    d = null;
-  }
+  let d = new Date();
+  let timestamp = d.getHours() + ":" + `${d.getMinutes()}`.padStart(2, 0) + ":" +
+      `${d.getSeconds()}`.padStart(2, 0);
+  log.innerHTML += '<span class="timestamp">' + timestamp + ' -> </span>';
+  d = null;
+  
   log.innerHTML += line+ "<br>";
 
   // Remove old log content
@@ -129,9 +113,8 @@ function logData(line) {
     log.innerHTML = logLines.splice(-maxLogLength).join("<br>\n");
   }
 
-  if (autoscroll.checked) {
-    log.scrollTop = log.scrollHeight
-  }
+  log.scrollTop = log.scrollHeight
+  
 }
 
 /**
@@ -159,22 +142,6 @@ async function clickConnect() {
   reset();
 
   toggleUIConnected(true);
-}
-
-/**
- * @name clickAutoscroll
- * Change handler for the Autoscroll checkbox.
- */
-async function clickAutoscroll() {
-  saveSetting('autoscroll', autoscroll.checked);
-}
-
-/**
- * @name clickTimestamp
- * Change handler for the Show Timestamp checkbox.
- */
-async function clickTimestamp() {
-  saveSetting('timestamp', showTimestamp.checked);
 }
 
 /**
@@ -241,8 +208,6 @@ function initBaudRate() {
 
 function loadAllSettings() {
   // Load all saved settings or defaults
-  autoscroll.checked = loadSetting('autoscroll', true);
-  showTimestamp.checked = loadSetting('timestamp', false);
   baudRate.value = loadSetting('baudrate', 9600);
 }
 
@@ -253,15 +218,6 @@ function loadSetting(setting, defaultValue) {
   }
 
   return value;
-}
-
-let isWebGLAvailable = function() {
-  try {
-    var canvas = document.createElement( 'canvas' );
-    return !! (window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
-  } catch (e) {
-    return false;
-  }
 }
 
 function saveSetting(setting, value) {
