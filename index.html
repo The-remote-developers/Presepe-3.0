@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Read monitor</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://threejs.org/build/three.module.js",
+                "objloader": "https://threejs.org/examples/jsm/loaders/OBJLoader.js"
+            }
+        }
+    </script>
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- import the webpage's javascript file -->
+    <script type="module" src="js/script.js" defer></script>
+  </head>
+  <body>
+    <header class="header">
+      <h1>Test</h1>
+    </header>
+    <main class="main">
+      <div id="notSupported" class="notSupported">
+        Sorry, <b>Web Serial</b> is not supported on this device, make sure you're
+        running Chrome 78 or later and have enabled the
+        <code>#enable-experimental-web-platform-features</code> flag in
+        <code>chrome://flags</code>
+      </div>
+      <div id="webGLnotSupported" class="notSupported">
+        Sorry, <b>WebGL</b> is not supported on this device.
+      </div>
+
+      <div class="controls">
+        <button id="butConnect" type="button">Connect</button>
+        <select id="baudRate"></select>
+      </div>
+      <div id="log-container" class="row">
+        <div id="log" class="log"></div>
+        <div id="calibration" class="calibration-container"></div>
+      </div>
+      <div class="controls">
+        <input type="checkbox" id="autoscroll"> Autoscroll
+        <input type="checkbox" id="showTimestamp"> Show Timestamp
+        <button id="butClear" type="button">Clear</button>
+      </div>
+    </main>
+  </body>
+</html>
