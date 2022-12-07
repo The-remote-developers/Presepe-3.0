@@ -17,72 +17,115 @@
 <body>
   <header class="header">
     <h1>Presepe 3.0</h1>
+    <!-- Right text -->
+    <div class="right">
+      <img id="languageSelected" class="flag">
+    </div>
   </header>
   <main class="main">
-    <div id="notSupported" class="notSupported hidden">
+    <div id="notSupported" class="notSupported" style="display: none;">
       Sorry, <b>Web Serial</b> is not supported on this device, make sure you're
       running Chrome 78 or later and have enabled the
       <code>#enable-experimental-web-platform-features</code> flag in
       <code>chrome://flags</code>
     </div>
 
-    <!-- Two col -->
-    <div class="row">
-      <div class="col">
-        <div class="controls">
-          <button id="butConnect" class="btn btn-primary">Connect</button>
-          <select id="baudRate"></select>
+    <div id="selectLanguage" class="selectLanguage" style="display: none;">
+      <h2 class="mb-4">Choose your language</h2>
+      <div class="row">
+        <!-- Italian -->
+        <div class="col">
+          <img src="img/it.png" alt="Italian" class="flag" id="it">
+          <p>Italiano</p>
+        </div>
+        <!-- English -->
+        <div class="col">
+          <img src="img/en.png" alt="English" class="flag" id="en">
+          <p>English</p>
+        </div>
+        <!-- Spanish -->
+        <div class="col">
+          <img src="img/es.png" alt="Spanish" class="flag" id="es">
+          <p>Español</p>
+        </div>
+        <!-- French -->
+        <div class="col">
+          <img src="img/fr.png" alt="French" class="flag" id="fr">
+          <p>Français</p>
+        </div>
+        <!-- Chinese -->
+        <div class="col">
+          <img src="img/cn.png" alt="Chinese" class="flag" id="cn">
+          <p>中文</p>
+        </div>
+        <!-- Arabic -->
+        <div class="col">
+          <img src="img/ar.png" alt="Arabic" class="flag" id="ar">
+          <p>العربية</p>
+        </div>
+        <!-- Ukrainian -->
+        <div class="col">
+          <img src="img/ua.png" alt="Ukrainian" class="flag" id="ua">
+          <p>Українська</p>
+        </div>
+        <!-- Romanian -->
+        <div class="col">
+          <img src="img/ro.png" alt="Romanian" class="flag" id="ro">
+          <p>Română</p>
         </div>
       </div>
-      <div class="col">
+    </div>
+
+    <div id="connectSerial" class="connectSerial hidden">
+      <div class="modal fade" tabindex="-1" id="selectBaudRate">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Select the baud rate</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p>Choose the baud rate of the serial port.</p>
+              <div class="d-flex">
+                <select id="baudRate"></select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary" id="butConnect" data-bs-dismiss="modal">Connect</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="mb-4">Connect to the Arduino</h2>
+      <div class="container">
+        <div class="controls mb-4">
+          <div class="d-flex"> 
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#selectBaudRate">Connect</button>
+          </div>
+          <button id="changeLanguage" class="btn btn-primary">Change language</button>
+        </div>
         <div id="log-container" class="row">
           <div id="log" class="log"></div>
           <div id="calibration" class="calibration-container"></div>
         </div>
       </div>
     </div>
+    
+    <div id="video" class="video hidden">
+      <h2 class="mb-4">Video</h2>
+      <div class="container">
+        <video id="videoPlayer" class="videoPlayer" autoplay controls loop>
+          <source src="videos/black.mp4" type="video/mp4">
+        </video>
 
-    <div id="selectLanguage" class="selectLanguage">
-      <!-- Flags with name. On click save in the local storage -->
-      <!-- Italian -->
-      <div class="row">
-        <div class="col">
-          <img src="img/it.png" alt="Italian" class="flag" id="it">
-          <p>Italiano</p>
-      </div>
-      <!-- English -->
-      <div class="col">
-        <img src="img/en.png" alt="English" class="flag" id="en">
-        <p>English</p>
-      </div>
-      <!-- Spanish -->
-      <div class="col">
-        <img src="img/es.png" alt="Spanish" class="flag" id="es">
-        <p>Español</p>
-      </div>
-      <!-- French -->
-      <div class="col">
-        <img src="img/fr.png" alt="French" class="flag" id="fr">
-        <p>Français</p>
-      </div>
-      <!-- Chinese -->
-      <div class="col">
-        <img src="img/cn.png" alt="Chinese" class="flag" id="cn">
-        <p>中文</p>
-      </div>
-      <!-- Arabic -->
-      <div class="col">
-        <img src="img/ar.png" alt="Arabic" class="flag" id="ar">
-        <p>العربية</p>
-      </div>
-      <!-- Ukrainian -->
-      <div class="col">
-        <img src="img/ua.png" alt="Ukrainian" class="flag" id="ua">
-        <p>Українська</p>
+        <button id="butDisconnect" class="btn btn-primary">Disconnect</button>
       </div>
     </div>
-
   </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+    integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
     crossorigin="anonymous"></script>

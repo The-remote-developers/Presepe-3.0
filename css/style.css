@@ -16,7 +16,7 @@
   height: 5vh;
   min-height: 50px;
   justify-content: flex-start;
-  padding: 16px 16px 0 16px;
+  padding: 10px 16px 0 16px;
   position: fixed;
   transition: transform 0.233s cubic-bezier(0, 0, 0.21, 1) 0.1s;
   width: 100%;
@@ -25,10 +25,17 @@
   margin: 0;
 }
 
+.header .flag {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
 .header h1 {
+  padding-top: 6px;
   flex: 1;
   font-size: 20px;
-  font-weight: 400;
+  font-weight: 600;
 }
 
 body {
@@ -86,14 +93,6 @@ button {
   display: none;
 }
 
-.controls {
-  height: 40px;
-  line-height: 40px;
-}
-
-.controls span {
-  margin-left: 8px;
-}
 
 .notSupported {
   padding: 1em;
@@ -138,11 +137,43 @@ button {
   flex-direction: column;
 }
 
-.selectLanguage .col:hover {
+.selectLanguage .flag:hover {
   cursor: pointer;
+  padding: 5px;
+  transition: all 0.3s ease;
 }
 
 .selectLanguage p {
   font-size: 1.3rem;
   font-weight: 600;
+}
+
+.selectLanguage h2 {
+  text-align: center;
+}
+
+.connectSerial h2 {
+  text-align: center;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1em 0;
+}
+
+.controls select {
+  margin-left: 0.5em;
+}
+
+.video h2 {
+  text-align: center;
+}
+
+.video .videoPlayer {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
