@@ -13,65 +13,61 @@ const log = document.getElementById('log');
 const butConnect = document.getElementById('butConnect');
 const baudRate = document.getElementById('baudRate');
 
-$("#selectLanguage img").click(function() {
-  var lang = $(this).attr("id");
-  console.log(lang);
-  // Add the language to the url query
-  var url = new URL(window.location.href);
-  url.searchParams.set('lang', lang);
-  window.location.href = url;
-});
-
-
-$("#changeLanguage").click(function() {
-  // Remove the language from the url query
-  var url = new URL(window.location.href);
-  url.searchParams.delete('lang');
-  window.location.href = url;
-});
 
 document.addEventListener('DOMContentLoaded', async () => {
   if (!'serial' in navigator) {
     $("#notSupported").show();
     console.log('Web Serial API not supported.');
   }
-  
-  // Check if the language is set in the url query
-  var url = new URL(window.location.href);
-  var lang = url.searchParams.get("lang");
-  if (lang != null) {
-    $("#languageSelected").attr("src", "img/" + lang + ".png");
-    // Hide the language selector
-    $("#selectLanguage").addClass("hidden");
-    // Show the connect section
-    $("#connectSerial").removeClass("hidden");
 
-    butConnect.addEventListener('click', clickConnect);
-    baudRate.addEventListener('change', changeBaudRate);
+  butConnect.addEventListener('click', clickConnect);
+  baudRate.addEventListener('change', changeBaudRate);
 
-    initBaudRate();
-    loadAllSettings();
-    logData("Waiting for serial connection...");
-  } else {
-    // Show the language selector
-    $("#selectLanguage").fadeIn("fast");
-  }
+  initBaudRate();
+  loadAllSettings();
+  logData("Waiting for serial connection...");
+
 
 });
 
+$("#selectLanguage img").click(function() {
+  var lang = $(this).attr("id");
+  console.log(lang);
+  // Add the language to session storage
+  sessionStorage.setItem("lang", lang);
+
+  // Hide the language selection
+  $("#selectLanguage").hide();
+  // Show the video
+  $("#video").fadeIn("fast");
+
+  $("#languageSelected").attr("src", "img/" + lang + ".png");
+
+  goFullScreen();
+});
+
+
+$("#changeLanguage").click(function() {
+  // Show the language selection
+  $("#selectLanguage").fadeIn("fast");
+  resetVideo();
+  // Hide the video
+  $("#video").hide();
+  // Hide the connectSerial section
+  $("#connectSerial").hide();
+});
+
+
 async function connect() {
-  try {
-    // - Request a port and open a connection.
-    port = await navigator.serial.requestPort();
-      
-    // - Wait for the port to open.toggleUIConnected
+  // - Request a port and open a connection.
+  port = await navigator.serial.requestPort();
+
+  if (port) {
+    // - Open the connection.
     await port.open({ baudRate: baudRate.value });
-  } catch (e) {
-    // - Catch any errors and log them.
-    $("#notSupported").show();
-    logData("Web Serial API error: " + e);
+  } else {
+    logData("No serial port selected.");
   }
-  
 
   let decoder = new TextDecoderStream();
   inputDone = port.readable.pipeTo(decoder.writable);
@@ -85,10 +81,8 @@ async function connect() {
   });
 
   // When connected, hide the "connectSerial" section and show the "video" section
-  $("#connectSerial").addClass("hidden");
-  $("#video").removeClass("hidden");
-
-  goFullScreen();
+  $("#selectLanguage").fadeIn("fast");
+  $("#connectSerial").hide();
 }
 
 async function readLoop() {
@@ -127,16 +121,22 @@ function goFullScreen() {
   }
 }
 
+function resetVideo() {
+  $("#videoPlayer").attr("src", "videos/black.mp4");
+  // Add loop attribute
+  $("#videoPlayer").attr("loop", "loop");
+}
+
 async function changeZone(zone) {
-  console.log("Changing zone to " + zone);
-  var urlLang = new URL(window.location.href);
-  var lang = urlLang.searchParams.get("lang");
+  // Get the language from session storage
+  var lang = sessionStorage.getItem("lang");
   if (lang == null) {
-    // Remove the language from the url query
-    var url = new URL(window.location.href);
-    url.searchParams.delete('lang');
-    window.location.href = url;
+    console.log("No language selected");
+    return;
   }
+
+  console.log("Changing zone to " + zone);
+  
 
   $("#videoPlayer").attr("src", "videos/" + lang +  "/" + zone + ".mp4");
   // Remove loop attribute
@@ -145,21 +145,19 @@ async function changeZone(zone) {
   // Toggle fullscreen if not already
   goFullScreen();
 
-  // Open a video in fullscreen
-  // var video = window.open("videos/" + lang +  "/" + zone + ".mp4", "Video", "scrollbars=no,status=yes,titlebar=no,toolbar=no,menubar=no");
+  // Play the video
+  $("#videoPlayer")[0].play();
+
 }
 
 
 $("#butDisconnect").click(function() {
   disconnect();
   // When disconnected, hide the "video" section and show the "connectSerial" section
-  $("#video").addClass("hidden");
-  $("#connectSerial").removeClass("hidden");
-  // Reset the video
-  $("#videoPlayer").attr("src", "");
+  resetVideo();
+  $("#video").hide();
+  $("#connectSerial").fadeIn("fast");
 
-  // Reset ui
-  toggleUIConnected(false);
 });
 
 /**
