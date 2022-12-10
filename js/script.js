@@ -15,18 +15,17 @@ const baudRate = document.getElementById('baudRate');
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-  if (!'serial' in navigator) {
+  if ('serial' in navigator) {
+    butConnect.addEventListener('click', clickConnect);
+    baudRate.addEventListener('change', changeBaudRate);
+  
+    initBaudRate();
+    loadAllSettings();
+    logData("Waiting for serial connection...");  
+  } else {
     $("#notSupported").show();
     console.log('Web Serial API not supported.');
   }
-
-  butConnect.addEventListener('click', clickConnect);
-  baudRate.addEventListener('change', changeBaudRate);
-
-  initBaudRate();
-  loadAllSettings();
-  logData("Waiting for serial connection...");
-
 
 });
 
