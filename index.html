@@ -23,14 +23,14 @@
     </div>
   </header>
   <main class="main">
-    <div id="notSupported" class="notSupported" style="display: none;">
+    <!-- <div id="notSupported" class="notSupported" style="display: none;">
       Sorry, <b>Web Serial</b> is not supported on this device, make sure you're
       running Chrome 78 or later and have enabled the
       <code>#enable-experimental-web-platform-features</code> flag in
       <code>chrome://flags</code>
     </div>
-
-    <div id="connectSerial" class="connectSerial">
+     -->
+    <!-- <div id="connectSerial" class="connectSerial">
       <div class="modal fade" tabindex="-1" id="selectBaudRate">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -62,8 +62,8 @@
         </div>
       </div>
     </div>
-    
-    <div id="selectLanguage" class="selectLanguage" style="display: none;">
+     -->
+    <div id="selectLanguage" class="selectLanguage">
       <h2 class="mb-4">Choose your language</h2>
       <div class="row">
         <!-- Italian -->
@@ -87,25 +87,25 @@
           <p>Français</p>
         </div>
         <!-- Chinese -->
-        <div class="col">
+        <!-- <div class="col">
           <img src="img/cn.png" alt="Chinese" class="flag" id="cn">
           <p>中文</p>
-        </div>
+        </div> -->
         <!-- Arabic -->
-        <div class="col">
+        <!-- <div class="col">
           <img src="img/ar.png" alt="Arabic" class="flag" id="ar">
           <p>العربية</p>
-        </div>
+        </div> -->
         <!-- Ukrainian -->
-        <div class="col">
+        <!-- <div class="col">
           <img src="img/ua.png" alt="Ukrainian" class="flag" id="ua">
           <p>Українська</p>
-        </div>
+        </div> -->
         <!-- Romanian -->
-        <div class="col">
+        <!-- <div class="col">
           <img src="img/ro.png" alt="Romanian" class="flag" id="ro">
           <p>Română</p>
-        </div>
+        </div> -->
       </div>
     </div>
     
@@ -115,8 +115,10 @@
         <video id="videoPlayer" class="videoPlayer" autoplay controls loop>
           <source src="videos/black.mp4" type="video/mp4">
         </video>
-        <div class="mb-4">
-          <button id="butDisconnect" class="btn btn-primary">Disconnect</button>
+        <div class="mb-4 d-flex gap-4">
+          <button onclick="changeZone(1)" class="btn btn-primary">Zone 1</button>
+          <button onclick="changeZone(2)" class="btn btn-primary">Zone 2</button>
+          <button onclick="changeZone(3)" class="btn btn-primary">Zone 3</button>
           <button id="changeLanguage" class="btn btn-primary">Change language</button>
         </div>
       </div>

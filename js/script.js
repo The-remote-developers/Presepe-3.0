@@ -7,27 +7,27 @@ let outputDone;
 let inputStream;
 let outputStream;
 
-const maxLogLength = 100;
-const baudRates = [300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 74880, 115200, 230400, 250000, 500000, 1000000, 2000000];
-const log = document.getElementById('log');
-const butConnect = document.getElementById('butConnect');
-const baudRate = document.getElementById('baudRate');
+// const maxLogLength = 100;
+// const baudRates = [300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 74880, 115200, 230400, 250000, 500000, 1000000, 2000000];
+// const log = document.getElementById('log');
+// const butConnect = document.getElementById('butConnect');
+// const baudRate = document.getElementById('baudRate');
 
 
-document.addEventListener('DOMContentLoaded', async () => {
-  if ('serial' in navigator) {
-    butConnect.addEventListener('click', clickConnect);
-    baudRate.addEventListener('change', changeBaudRate);
+// document.addEventListener('DOMContentLoaded', async () => {
+//   if ('serial' in navigator) {
+//     butConnect.addEventListener('click', clickConnect);
+//     baudRate.addEventListener('change', changeBaudRate);
   
-    initBaudRate();
-    loadAllSettings();
-    logData("Waiting for serial connection...");  
-  } else {
-    $("#notSupported").show();
-    console.log('Web Serial API not supported.');
-  }
+//     initBaudRate();
+//     loadAllSettings();
+//     logData("Waiting for serial connection...");  
+//   } else {
+//     $("#notSupported").show();
+//     console.log('Web Serial API not supported.');
+//   }
 
-});
+// });
 
 $("#selectLanguage img").click(function() {
   var lang = $(this).attr("id");
