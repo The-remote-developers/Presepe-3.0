@@ -23,14 +23,14 @@
     </div>
   </header>
   <main class="main">
-    <!-- <div id="notSupported" class="notSupported" style="display: none;">
+    <div id="notSupported" class="notSupported" style="display: none;">
       Sorry, <b>Web Serial</b> is not supported on this device, make sure you're
       running Chrome 78 or later and have enabled the
       <code>#enable-experimental-web-platform-features</code> flag in
       <code>chrome://flags</code>
     </div>
-     -->
-    <!-- <div id="connectSerial" class="connectSerial">
+    
+    <div id="connectSerial" class="connectSerial">
       <div class="modal fade" tabindex="-1" id="selectBaudRate">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -62,8 +62,8 @@
         </div>
       </div>
     </div>
-     -->
-    <div id="selectLanguage" class="selectLanguage">
+
+    <div id="selectLanguage" class="selectLanguage" style="display: none;">
       <h2 class="mb-4">Choose your language</h2>
       <div class="row">
         <!-- Italian -->
@@ -87,10 +87,10 @@
           <p>Français</p>
         </div>
         <!-- Chinese -->
-        <!-- <div class="col">
+        <div class="col">
           <img src="img/cn.png" alt="Chinese" class="flag" id="cn">
           <p>中文</p>
-        </div> -->
+        </div>
         <!-- Arabic -->
         <!-- <div class="col">
           <img src="img/ar.png" alt="Arabic" class="flag" id="ar">
@@ -108,7 +108,7 @@
         </div> -->
       </div>
     </div>
-    
+
     <div id="video" class="video" style="display: none;">
       <h2 class="mb-4">Video</h2>
       <div class="container">
@@ -120,9 +120,10 @@
           <button onclick="changeZone(2)" class="btn btn-primary">Zone 2</button>
           <button onclick="changeZone(3)" class="btn btn-primary">Zone 3</button>
           <button id="changeLanguage" class="btn btn-primary">Change language</button>
+          <button id="butDisconnect" class="btn btn-primary">Disconnect</button>
         </div>
       </div>
-    </div>    
+    </div>
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
     integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="

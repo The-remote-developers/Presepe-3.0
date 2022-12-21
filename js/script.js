@@ -7,27 +7,29 @@ let outputDone;
 let inputStream;
 let outputStream;
 
-// const maxLogLength = 100;
-// const baudRates = [300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 74880, 115200, 230400, 250000, 500000, 1000000, 2000000];
-// const log = document.getElementById('log');
-// const butConnect = document.getElementById('butConnect');
-// const baudRate = document.getElementById('baudRate');
+const maxLogLength = 100;
+const baudRates = [300, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 74880, 115200, 230400, 250000, 500000, 1000000, 2000000];
+const log = document.getElementById('log');
+const butConnect = document.getElementById('butConnect');
+const baudRate = document.getElementById('baudRate');
+
+let usedZones = [];
 
 
-// document.addEventListener('DOMContentLoaded', async () => {
-//   if ('serial' in navigator) {
-//     butConnect.addEventListener('click', clickConnect);
-//     baudRate.addEventListener('change', changeBaudRate);
+document.addEventListener('DOMContentLoaded', async () => {
+  if ('serial' in navigator) {
+    butConnect.addEventListener('click', clickConnect);
+    baudRate.addEventListener('change', changeBaudRate);
   
-//     initBaudRate();
-//     loadAllSettings();
-//     logData("Waiting for serial connection...");  
-//   } else {
-//     $("#notSupported").show();
-//     console.log('Web Serial API not supported.');
-//   }
+    initBaudRate();
+    loadAllSettings();
+    logData("Waiting for serial connection...");  
+  } else {
+    $("#notSupported").show();
+    console.log('Web Serial API not supported.');
+  }
 
-// });
+});
 
 $("#selectLanguage img").click(function() {
   var lang = $(this).attr("id");
@@ -43,6 +45,8 @@ $("#selectLanguage img").click(function() {
   $("#languageSelected").attr("src", "img/" + lang + ".png");
 
   goFullScreen();
+  // Reset the used zones
+  usedZones = [];
 });
 
 
@@ -78,10 +82,11 @@ async function connect() {
     toggleUIConnected(false);
     await disconnect();
   });
-
+  resetLanguage();
   // When connected, hide the "connectSerial" section and show the "video" section
   $("#selectLanguage").fadeIn("fast");
   $("#connectSerial").hide();
+
 }
 
 async function readLoop() {
@@ -90,7 +95,15 @@ async function readLoop() {
     console.log('[readLoop] value', value);
     // Check if the value is a number
     if (value != null && !isNaN(value)) {
-      changeZone(value);
+      // Check if the value is already in the array
+      if (usedZones.includes(value)) {
+        // If the zone is already used, do nothing
+        continue;
+      } else {
+        // If the zone is not used, add it to the array
+        usedZones.push(value);
+        changeZone(value);
+      }
     }
     if (done) {
       console.log('[readLoop] DONE', done);
@@ -126,26 +139,52 @@ function resetVideo() {
   $("#videoPlayer").attr("loop", "loop");
 }
 
+function resetLanguage() {
+  // Remove the language from session storage
+  sessionStorage.removeItem("lang");
+}
+
 async function changeZone(zone) {
   // Get the language from session storage
   var lang = sessionStorage.getItem("lang");
+  console.log("Language: " + lang);
   if (lang == null) {
     console.log("No language selected");
     return;
   }
 
-  console.log("Changing zone to " + zone);
+  if(zone == 4) {
+    // Reset the used zones
+    usedZones = [];
+    // Show the language selection
+    $("#selectLanguage").fadeIn("fast");
+    resetVideo();
+    // Hide the video
+    $("#video").hide();
+    // stop the video
+    $("#videoPlayer")[0].pause();
+    // Leave fullscreen
+    document.exitFullscreen();
+    
+    // Hide the connectSerial section
+    $("#connectSerial").hide();
+    resetLanguage();
+    return;
+  } else {
+    console.log("Changing zone to " + zone);
   
 
-  $("#videoPlayer").attr("src", "videos/" + lang +  "/" + zone + ".mp4");
-  // Remove loop attribute
-  $("#videoPlayer").removeAttr("loop");
-
-  // Toggle fullscreen if not already
-  goFullScreen();
-
-  // Play the video
-  $("#videoPlayer")[0].play();
+    $("#videoPlayer").attr("src", "videos/" + lang +  "/" + zone + ".mp4");
+    // Remove loop attribute
+    $("#videoPlayer").removeAttr("loop");
+  
+    // Toggle fullscreen if not already
+    goFullScreen();
+  
+    // Play the video
+    $("#videoPlayer")[0].play();
+  
+  }
 
 }
 
@@ -156,6 +195,9 @@ $("#butDisconnect").click(function() {
   resetVideo();
   $("#video").hide();
   $("#connectSerial").fadeIn("fast");
+  // Reset the used zones
+  usedZones = [];
+  resetLanguage();
 
 });
 
